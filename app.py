@@ -17,43 +17,371 @@ st.set_page_config(
 # ── CSS ───────────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
-  .hero { text-align:center; padding:2rem 0 1rem; }
-  .hero h1 { font-size:3rem; margin-bottom:0; }
-  .hero p  { font-size:1.1rem; opacity:.75; }
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap');
 
+  /* ── Global Reset & Base ── */
+  html, body, [data-testid="stAppViewContainer"] {
+    background: #040610 !important;
+    color: #e0e8ff !important;
+  }
+
+  [data-testid="stAppViewContainer"] {
+    background:
+      radial-gradient(ellipse 80% 40% at 50% 0%, rgba(99,40,255,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 30% at 80% 100%, rgba(0,230,180,0.10) 0%, transparent 60%),
+      #040610 !important;
+  }
+
+  [data-testid="block-container"] {
+    padding-top: 2rem !important;
+  }
+
+  /* ── Typography Base ── */
+  body, p, li, span, div, label {
+    font-family: 'Rajdhani', sans-serif !important;
+    letter-spacing: 0.02em;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Orbitron', monospace !important;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── HERO BLOCK ── */
+  .hero {
+    text-align: center;
+    padding: 2.5rem 0 1.5rem;
+    position: relative;
+  }
+
+  .hero h1 {
+    font-family: 'Orbitron', monospace !important;
+    font-size: 2.8rem;
+    font-weight: 900;
+    margin-bottom: 0.4rem;
+    background: linear-gradient(90deg, #00e6b4, #7b5cff, #ff4fa3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    filter: drop-shadow(0 0 24px rgba(123,92,255,0.5));
+    animation: flicker 4s infinite alternate;
+  }
+
+  @keyframes flicker {
+    0%, 95%, 100% { opacity: 1; }
+    96% { opacity: 0.85; }
+    97% { opacity: 1; }
+    98% { opacity: 0.9; }
+  }
+
+  .hero p {
+    font-family: 'Rajdhani', sans-serif !important;
+    font-size: 1rem;
+    color: #7b8cc8;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* ── SCANLINE DIVIDER ── */
+  hr {
+    border: none !important;
+    border-top: 1px solid rgba(123,92,255,0.25) !important;
+    margin: 1.5rem 0 !important;
+    position: relative;
+  }
+
+  /* ── QUESTION CARD ── */
   .q-card {
-    background:linear-gradient(135deg,#1a1a2e,#16213e);
-    color:white; border-radius:16px;
-    padding:1.5rem 2rem; margin:1rem 0;
+    background: linear-gradient(135deg, rgba(10,12,40,0.95), rgba(18,10,50,0.90));
+    border: 1px solid rgba(123,92,255,0.5);
+    border-left: 4px solid #7b5cff;
+    border-radius: 12px;
+    padding: 1.6rem 2rem;
+    margin: 1rem 0;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(123,92,255,0.15), inset 0 0 60px rgba(0,0,0,0.4);
   }
-  .q-number { font-size:.85rem; opacity:.6; margin-bottom:.5rem; }
-  .q-text   { font-size:1.25rem; font-weight:600; line-height:1.5; }
 
+  .q-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #7b5cff, #00e6b4, transparent);
+  }
+
+  .q-number {
+    font-family: 'Orbitron', monospace !important;
+    font-size: 0.7rem;
+    color: #7b5cff;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.7rem;
+  }
+
+  .q-text {
+    font-family: 'Rajdhani', sans-serif !important;
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.55;
+    color: #dde6ff;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── ANSWER FEEDBACK ── */
   .correct-box {
-    background:#e8f5e9; border-left:5px solid #4CAF50;
-    padding:1rem; border-radius:8px; margin:.5rem 0;
+    background: linear-gradient(135deg, rgba(0,230,150,0.08), rgba(0,180,100,0.05));
+    border: 1px solid rgba(0,230,150,0.4);
+    border-left: 4px solid #00e696;
+    padding: 1rem 1.2rem;
+    border-radius: 8px;
+    margin: 0.5rem 0;
+    font-family: 'Rajdhani', sans-serif !important;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #00e696;
+    letter-spacing: 0.04em;
   }
+
   .wrong-box {
-    background:#ffebee; border-left:5px solid #F44336;
-    padding:1rem; border-radius:8px; margin:.5rem 0;
+    background: linear-gradient(135deg, rgba(255,60,100,0.08), rgba(180,20,60,0.05));
+    border: 1px solid rgba(255,60,100,0.4);
+    border-left: 4px solid #ff3c64;
+    padding: 1rem 1.2rem;
+    border-radius: 8px;
+    margin: 0.5rem 0;
+    font-family: 'Rajdhani', sans-serif !important;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #ff6b8a;
+    letter-spacing: 0.04em;
   }
 
+  /* ── SCORE BIG ── */
   .score-big {
-    font-size:4rem; font-weight:700; text-align:center;
-    background:linear-gradient(135deg,#667eea,#764ba2);
-    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    font-family: 'Orbitron', monospace !important;
+    font-size: 4.5rem;
+    font-weight: 900;
+    text-align: center;
+    background: linear-gradient(135deg, #00e6b4, #7b5cff, #ff4fa3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 20px rgba(123,92,255,0.6));
+    margin: 1.5rem 0 0.5rem;
+    animation: pulse-glow 2s ease-in-out infinite;
   }
-  .stat-row  { display:flex; justify-content:center; gap:2rem; margin:1rem 0; }
-  .stat-box  {
-    text-align:center; background:#f8f9ff;
-    padding:1rem 1.5rem; border-radius:12px; min-width:90px;
-  }
-  .stat-num  { font-size:1.8rem; font-weight:700; }
-  .stat-lbl  { font-size:.8rem; opacity:.6; }
 
+  @keyframes pulse-glow {
+    0%, 100% { filter: drop-shadow(0 0 20px rgba(123,92,255,0.6)); }
+    50% { filter: drop-shadow(0 0 35px rgba(0,230,180,0.7)); }
+  }
+
+  /* ── STAT ROW ── */
+  .stat-row {
+    display: flex;
+    justify-content: center;
+    gap: 1.2rem;
+    margin: 1.2rem 0;
+    flex-wrap: wrap;
+  }
+
+  .stat-box {
+    text-align: center;
+    background: rgba(10,12,40,0.8);
+    border: 1px solid rgba(123,92,255,0.3);
+    padding: 1rem 1.4rem;
+    border-radius: 12px;
+    min-width: 90px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #7b5cff, #00e6b4);
+  }
+
+  .stat-num {
+    font-family: 'Orbitron', monospace !important;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #dde6ff;
+  }
+
+  .stat-lbl {
+    font-family: 'Rajdhani', sans-serif !important;
+    font-size: 0.75rem;
+    color: #7b8cc8;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* ── STREAMLIT BUTTONS ── */
   div[data-testid="stButton"] > button {
-    width:100%; border-radius:10px; padding:.6rem 1rem;
-    font-size:1rem; font-weight:500;
+    width: 100% !important;
+    border-radius: 8px !important;
+    padding: 0.65rem 1rem !important;
+    font-family: 'Rajdhani', sans-serif !important;
+    font-size: 1.05rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    background: rgba(10,12,40,0.8) !important;
+    border: 1px solid rgba(123,92,255,0.5) !important;
+    color: #b0bcff !important;
+    transition: all 0.18s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+  }
+
+  div[data-testid="stButton"] > button:hover {
+    background: rgba(123,92,255,0.15) !important;
+    border-color: #7b5cff !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 20px rgba(123,92,255,0.35) !important;
+    transform: translateY(-1px) !important;
+  }
+
+  div[data-testid="stButton"] > button[kind="primary"] {
+    background: linear-gradient(135deg, #7b5cff, #5b3cdd) !important;
+    border-color: #9b7cff !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 18px rgba(123,92,255,0.4) !important;
+  }
+
+  div[data-testid="stButton"] > button[kind="primary"]:hover {
+    background: linear-gradient(135deg, #9b7cff, #7b5cff) !important;
+    box-shadow: 0 0 30px rgba(123,92,255,0.6) !important;
+    transform: translateY(-2px) !important;
+  }
+
+  /* ── METRICS ── */
+  [data-testid="metric-container"] {
+    background: rgba(10,12,40,0.75) !important;
+    border: 1px solid rgba(123,92,255,0.25) !important;
+    border-radius: 10px !important;
+    padding: 0.8rem 1rem !important;
+  }
+
+  [data-testid="metric-container"] label {
+    font-family: 'Rajdhani', sans-serif !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.12em !important;
+    text-transform: uppercase !important;
+    color: #7b8cc8 !important;
+  }
+
+  [data-testid="metric-container"] [data-testid="stMetricValue"] {
+    font-family: 'Orbitron', monospace !important;
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    color: #dde6ff !important;
+  }
+
+  /* ── PROGRESS BAR ── */
+  [data-testid="stProgressBar"] > div {
+    background: rgba(123,92,255,0.15) !important;
+    border-radius: 4px !important;
+    height: 6px !important;
+  }
+
+  [data-testid="stProgressBar"] > div > div {
+    background: linear-gradient(90deg, #7b5cff, #00e6b4) !important;
+    border-radius: 4px !important;
+    box-shadow: 0 0 10px rgba(0,230,180,0.4) !important;
+  }
+
+  /* ── INFO / SUCCESS / ERROR BOXES ── */
+  [data-testid="stAlert"] {
+    border-radius: 8px !important;
+    font-family: 'Rajdhani', sans-serif !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.02em !important;
+  }
+
+  /* ── INPUTS ── */
+  input[type="text"], .stTextInput input {
+    background: rgba(10,12,40,0.8) !important;
+    border: 1px solid rgba(123,92,255,0.35) !important;
+    border-radius: 8px !important;
+    color: #dde6ff !important;
+    font-family: 'Rajdhani', sans-serif !important;
+    font-size: 1rem !important;
+    padding: 0.55rem 0.85rem !important;
+  }
+
+  input[type="text"]:focus, .stTextInput input:focus {
+    border-color: #7b5cff !important;
+    box-shadow: 0 0 12px rgba(123,92,255,0.3) !important;
+  }
+
+  /* ── SELECT BOXES ── */
+  [data-testid="stSelectbox"] > div > div {
+    background: rgba(10,12,40,0.8) !important;
+    border: 1px solid rgba(123,92,255,0.35) !important;
+    border-radius: 8px !important;
+    color: #dde6ff !important;
+    font-family: 'Rajdhani', sans-serif !important;
+  }
+
+  /* ── SLIDER ── */
+  [data-testid="stSlider"] .stSlider {
+    accent-color: #7b5cff !important;
+  }
+
+  /* ── EXPANDER ── */
+  [data-testid="stExpander"] {
+    background: rgba(10,12,40,0.6) !important;
+    border: 1px solid rgba(123,92,255,0.2) !important;
+    border-radius: 8px !important;
+    font-family: 'Rajdhani', sans-serif !important;
+  }
+
+  /* ── LEADERBOARD ── */
+  .leaderboard-title {
+    font-family: 'Orbitron', monospace !important;
+    font-size: 1.1rem;
+    color: #7b5cff;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+
+  /* ── SPINNER ── */
+  [data-testid="stSpinner"] p {
+    font-family: 'Rajdhani', sans-serif !important;
+    color: #7b5cff !important;
+    letter-spacing: 0.08em !important;
+  }
+
+  /* ── SIDEBAR HIDE ── */
+  [data-testid="stSidebar"] { display: none !important; }
+  [data-testid="collapsedControl"] { display: none !important; }
+
+  /* ── LABEL OVERRIDES ── */
+  .stTextInput label, .stSelectbox label, .stSlider label {
+    font-family: 'Rajdhani', sans-serif !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+    color: #8892c8 !important;
+  }
+
+  /* ── COLUMNS GAP ── */
+  [data-testid="column"] { gap: 0.6rem !important; }
+
+  /* ── TIMER TEXT ── */
+  .timer-glow {
+    font-family: 'Orbitron', monospace;
+    letter-spacing: 0.08em;
   }
 </style>
 """, unsafe_allow_html=True)
@@ -152,10 +480,10 @@ elif st.session_state.phase in ("playing", "feedback"):
         ans = g["answers_given"][-1]
 
         if fb["is_correct"]:
-            st.markdown(f"<div class='correct-box'>✅ <b>Correct!</b> +{fb['points']} points | ⏱️ {ans['time_taken']}s</div>",
+            st.markdown(f"<div class='correct-box'>✅ &nbsp;CORRECT! &nbsp;+{fb['points']} points &nbsp;|&nbsp; ⏱️ {ans['time_taken']}s</div>",
                         unsafe_allow_html=True)
         else:
-            st.markdown(f"<div class='wrong-box'>❌ <b>Wrong!</b> Correct answer: <b>{fb['correct_answer']}</b></div>",
+            st.markdown(f"<div class='wrong-box'>❌ &nbsp;WRONG! &nbsp;Correct answer: <b>{fb['correct_answer']}</b></div>",
                         unsafe_allow_html=True)
 
         st.info(f"💡 {ans['explanation']}")
@@ -189,8 +517,8 @@ elif st.session_state.phase in ("playing", "feedback"):
 
         elapsed   = time.time() - g["question_start"]
         remaining = max(0, GAME_CONFIG["time_per_question"] - elapsed)
-        color     = "green" if remaining > 10 else ("orange" if remaining > 5 else "red")
-        st.markdown(f"<p style='color:{color};font-weight:600;'>⏱️ {remaining:.0f}s remaining</p>",
+        color     = "#00e696" if remaining > 10 else ("#ffaa00" if remaining > 5 else "#ff3c64")
+        st.markdown(f"<p class='timer-glow' style='color:{color};font-weight:700;font-size:1.05rem;'>⏱ {remaining:.0f}s remaining</p>",
                     unsafe_allow_html=True)
 
         if remaining <= 0:
@@ -211,7 +539,7 @@ elif st.session_state.phase == "result":
     grade = get_grade(g["score"], total, g["difficulty"])
 
     st.markdown(f"<div class='score-big'>{grade['emoji']} {g['score']} pts</div>", unsafe_allow_html=True)
-    st.markdown(f"<h3 style='text-align:center'>{grade['msg']} (Grade {grade['grade']})</h3>", unsafe_allow_html=True)
+    st.markdown(f"<h3 style='text-align:center; font-family:Rajdhani,sans-serif; color:#b0bcff; letter-spacing:0.05em;'>{grade['msg']} (Grade {grade['grade']})</h3>", unsafe_allow_html=True)
 
     st.markdown(f"""
     <div class='stat-row'>
