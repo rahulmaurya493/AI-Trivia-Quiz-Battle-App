@@ -83,9 +83,12 @@ if st.session_state.phase == "home":
     st.markdown("---")
 
    # API key comes from Streamlit Secrets only — never shown to user
-if not os.environ.get("GROQ_API_KEY"):
-    st.error("⚠️ GROQ_API_KEY not set. Please add it in Streamlit Cloud → Manage App → Secrets.")
+api_key = os.environ.get("GROQ_API_KEY", "")
+if not api_key:
+    st.error("❌ GROQ_API_KEY is missing from Streamlit Secrets!")
     st.stop()
+else:
+    st.success(f"✅ API Key loaded! Starts with: {api_key[:8]}...")
 
     name       = st.text_input("👤 Your name", placeholder="Enter your name...", value=st.session_state.player_name)
     category   = st.selectbox("📚 Category",   CATEGORIES)
