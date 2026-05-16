@@ -82,15 +82,10 @@ if st.session_state.phase == "home":
 
     st.markdown("---")
 
-    api_key = st.text_input(
-        "🔑 Groq API Key",
-        value=os.environ.get("GROQ_API_KEY", ""),
-        type="password",
-        placeholder="gsk_...",
-        help="Free key at console.groq.com"
-    )
-    if api_key:
-        os.environ["GROQ_API_KEY"] = api_key
+   # API key comes from Streamlit Secrets only — never shown to user
+if not os.environ.get("GROQ_API_KEY"):
+    st.error("⚠️ GROQ_API_KEY not set. Please add it in Streamlit Cloud → Manage App → Secrets.")
+    st.stop()
 
     name       = st.text_input("👤 Your name", placeholder="Enter your name...", value=st.session_state.player_name)
     category   = st.selectbox("📚 Category",   CATEGORIES)
