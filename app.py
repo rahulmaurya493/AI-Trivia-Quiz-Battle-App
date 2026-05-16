@@ -4,7 +4,6 @@ import streamlit as st
 from dotenv import load_dotenv
 
 load_dotenv()
-sys.path.insert(0, os.path.dirname(__file__))
 
 from question_generator import CATEGORIES, DIFFICULTY_LEVELS, generate_questions
 from game_logic import GAME_CONFIG, init_game_state, submit_answer, get_grade
