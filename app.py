@@ -82,32 +82,32 @@ if st.session_state.phase == "home":
 
     st.markdown("---")
 
-   # API key comes from Streamlit Secrets only — never shown to user
-api_key = os.environ.get("GROQ_API_KEY", "")
-if not api_key:
-    st.error("❌ GROQ_API_KEY is missing from Streamlit Secrets!")
-    st.stop()
-else:
-    st.success(f"✅ API Key loaded! Starts with: {api_key[:8]}...")
+    # API key comes from Streamlit Secrets only — never shown to user
+    api_key = os.environ.get("GROQ_API_KEY", "")
+    if not api_key:
+        st.error("❌ GROQ_API_KEY is missing from Streamlit Secrets!")
+        st.stop()
+    else:
+        st.success(f"✅ API Key loaded! Starts with: {api_key[:8]}...")
 
-    name       = st.text_input("👤 Your name", placeholder="Enter your name...", value=st.session_state.player_name)
-    category   = st.selectbox("📚 Category",   CATEGORIES)
-    difficulty = st.selectbox("⚡ Difficulty", DIFFICULTY_LEVELS)
-    num_q      = st.slider("❓ Number of questions", 5, 15, 10)
+        name       = st.text_input("👤 Your name", placeholder="Enter your name...", value=st.session_state.player_name)
+        category   = st.selectbox("📚 Category",   CATEGORIES)
+        difficulty = st.selectbox("⚡ Difficulty", DIFFICULTY_LEVELS)
+        num_q      = st.slider("❓ Number of questions", 5, 15, 10)
 
-    pts = GAME_CONFIG["points"][difficulty]
-    st.info(f"🎯 Each correct answer = **{pts} pts** + time bonus  |  ⏱️ {GAME_CONFIG['time_per_question']}s per question")
+        pts = GAME_CONFIG["points"][difficulty]
+        st.info(f"🎯 Each correct answer = **{pts} pts** + time bonus  |  ⏱️ {GAME_CONFIG['time_per_question']}s per question")
 
-    if st.button("🚀 Start Quiz!", type="primary"):
-        if not os.environ.get("GROQ_API_KEY"):
-            st.error("Please enter your Groq API key first.")
-        elif not name.strip():
-            st.error("Please enter your name.")
-        else:
-            st.session_state.player_name   = name.strip()
-            st.session_state._start_params = (category, difficulty, num_q)
-            st.session_state.phase         = "loading"
-            st.rerun()
+        if st.button("🚀 Start Quiz!", type="primary"):
+            if not os.environ.get("GROQ_API_KEY"):
+                st.error("Please enter your Groq API key first.")
+            elif not name.strip():
+                st.error("Please enter your name.")
+            else:
+                st.session_state.player_name   = name.strip()
+                st.session_state._start_params = (category, difficulty, num_q)
+                st.session_state.phase         = "loading"
+                st.rerun()
 
     if st.session_state.leaderboard:
         st.markdown("---")
@@ -117,7 +117,6 @@ else:
         for i, entry in enumerate(board, 1):
             medal = medals[i-1] if i <= 3 else f"{i}."
             st.markdown(f"{medal} **{entry['name']}** — {entry['score']} pts | {entry['category']} | {entry['difficulty']} | {entry['correct']}/{entry['total']} correct")
-
 # ─────────────────────────────────────────────────────────────────────────────
 # SCREEN 2 — LOADING
 # ─────────────────────────────────────────────────────────────────────────────
