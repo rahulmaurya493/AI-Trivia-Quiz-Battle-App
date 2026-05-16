@@ -16,11 +16,13 @@ CATEGORIES = [
 
 DIFFICULTY_LEVELS = ["Easy", "Medium", "Hard"]
 
-def get_client():
-    return Groq(api_key=os.environ.get("GROQ_API_KEY"))
-
 def generate_questions(category: str, difficulty: str, num_questions: int = 10) -> list:
-    client = get_client()
+    api_key = os.environ.get("GROQ_API_KEY", "").strip()
+    if not api_key:
+        raise ValueError("GROQ_API_KEY not found in secrets.")
+    
+    client = Groq(api_key=api_key)
+    
     prompt = f"""Generate exactly {num_questions} trivia questions about {category} at {difficulty} difficulty.
 
 Return ONLY a valid JSON array. No explanation, no markdown, no extra text.
