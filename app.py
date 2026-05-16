@@ -291,10 +291,3 @@ elif st.session_state.phase == "result":
         st.rerun()
 '''
 
-with open('trivia_app/app.py', 'w') as f:
-    f.write(app_code)
-
-print('✅ trivia_app/app.py written!')
-print()
-print('Now run this in your terminal:')
-print('   streamlit run trivia_app/app.py')
