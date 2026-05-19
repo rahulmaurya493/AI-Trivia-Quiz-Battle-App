@@ -393,6 +393,60 @@ st.markdown("""
   [data-testid="collapsedControl"] { display: none !important; }
 
   .timer-glow { font-family: 'Orbitron', monospace; letter-spacing: 0.08em; }
+
+  /* ── ANSWER REVIEW CARDS ── */
+  .ar-card {
+    background: rgba(10,12,40,0.75);
+    border: 1px solid rgba(123,92,255,0.2);
+    border-left: 4px solid #7b5cff;
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem;
+    margin-top: 0.3rem;
+  }
+
+  .ar-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0.28rem 0;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+  }
+
+  .ar-label {
+    color: #7b8cc8;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    margin-right: 1rem;
+  }
+
+  .ar-val {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #dde6ff;
+    text-align: right;
+  }
+
+  .ar-correct { color: #00e696; }
+  .ar-wrong   { color: #ff6b8a; }
+  .ar-pts     { color: #7b5cff; font-family: 'Orbitron', monospace; font-size: 0.9rem; }
+
+  .ar-divider {
+    border: none;
+    border-top: 1px solid rgba(123,92,255,0.15);
+    margin: 0.55rem 0;
+  }
+
+  .ar-explain {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.95rem;
+    color: #a0aed0;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+  }
 </style>
 """, unsafe_allow_html=True)
 
@@ -562,35 +616,52 @@ elif st.session_state.phase == "result":
     </div>
     """, unsafe_allow_html=True)
 
-    # Save to Supabase
-    save_score(
-        st.session_state.player_name,
-        g["score"], g["correct_count"], total,
-        g["category"], g["difficulty"], grade["grade"]
-    )
+    # Save to Supabase (once per result screen visit)
+    if not st.session_state.get("score_saved"):
+        save_score(
+            st.session_state.player_name,
+            g["score"], g["correct_count"], total,
+            g["category"], g["difficulty"], grade["grade"]
+        )
+        st.session_state.score_saved = True
     st.success("✅ Score saved to global leaderboard!")
 
     st.markdown("---")
     st.markdown("### 📋 Answer Review")
     for i, ans in enumerate(g["answers_given"], 1):
         icon = "✅" if ans["is_correct"] else "❌"
+        chosen   = ans["chosen"] or "(time ran out)"
+        correct  = ans["correct"]
+        is_right = ans["is_correct"]
+        pts_line = f'<div class="ar-row"><span class="ar-label">Points earned</span><span class="ar-val ar-pts">+{ans["points"]}</span></div>' if is_right else ""
+        wrong_row = "" if is_right else f'<div class="ar-row"><span class="ar-label">Correct answer</span><span class="ar-val ar-correct">{correct}</span></div>'
+        chosen_color = "ar-correct" if is_right else "ar-wrong"
+        border_color = "#00e696" if is_right else "#ff3c64"
         with st.expander(f"{icon} Q{i}: {ans['question']} ({ans['time_taken']}s)"):
-            st.write(f"**Your answer:** {ans['chosen'] or '(time ran out)'}")
-            if not ans["is_correct"]:
-                st.write(f"**Correct answer:** {ans['correct']}")
-            st.info(f"💡 {ans['explanation']}")
-            if ans["is_correct"]:
-                st.success(f"Points earned: {ans['points']}")
+            st.markdown(f"""
+            <div class="ar-card" style="border-left-color:{border_color}">
+              <div class="ar-row">
+                <span class="ar-label">Your answer</span>
+                <span class="ar-val {chosen_color}">{chosen}</span>
+              </div>
+              {wrong_row}
+              {pts_line}
+              <div class="ar-divider"></div>
+              <div class="ar-explain">💡 {ans['explanation']}</div>
+            </div>
+            """, unsafe_allow_html=True)
 
     st.markdown("---")
     c1, c2 = st.columns(2)
     if c1.button("🔄 Play Again", type="primary"):
-        st.session_state.phase    = "home"
-        st.session_state.game     = None
-        st.session_state.feedback = None
+        st.session_state.phase       = "home"
+        st.session_state.game        = None
+        st.session_state.feedback    = None
+        st.session_state.score_saved = False
         st.rerun()
     if c2.button("🏠 Home"):
-        st.session_state.phase    = "home"
-        st.session_state.game     = None
-        st.session_state.feedback = None
+        st.session_state.phase       = "home"
+        st.session_state.game        = None
+        st.session_state.feedback    = None
+        st.session_state.score_saved = False
         st.rerun()
